@@ -22,7 +22,6 @@ import php.FileSystem;
 #end
 
 class HGaudiApp {
-
 	static var buildFile : String = "build.json";
 	static var errorCode : Int = -1;
 
@@ -46,14 +45,20 @@ class HGaudiApp {
 		if(FileSystem.exists(buildFile)) {
 			buildConf = File.read(buildFile, false).readAll().toString();
 		}
-		else {
+		else 
 			displayError("Build file (" + buildFile + "). Cannot be found/opened"); 
-		}
 
 		// Shrink string by replacing tabs (ASCII 9) with null space;
 		// Gaudi build files should be written using tabs.
 		buildConf = StringTools.replace(buildConf, String.fromCharCode(9), "");
-		trace(buildConf);
+
+		var _hash = new Hash<String>();
+
+		// Delegate to the foreman and builder.
+		var foreman = new HGaudiForeman(buildConf, action);
+		var builder = new HGaudiBuilder(_hash, action);
+		builder.setTarget(foreman.getTarget());
+		builder.doCommand("exec", "vim");
 		Sys.exit(0);
 	}
 
