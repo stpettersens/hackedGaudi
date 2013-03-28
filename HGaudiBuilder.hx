@@ -41,7 +41,9 @@ class HGaudiBuilder {
 		var exitCode : Int = process.exitCode();
 		Lib.println(process.stderr.readAll().toString());
 		Lib.println(process.stdout.readAll().toString());
+		#if !php
 		process.close();
+		#end
 		return exitCode;
 	}
 
