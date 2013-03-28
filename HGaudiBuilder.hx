@@ -39,6 +39,8 @@ class HGaudiBuilder {
 	function execExtern(app : String) : Int {
 		var process : sys.io.Process = new sys.io.Process(app, []);
 		var exitCode : Int = process.exitCode();
+		Lib.println(process.stderr.readAll().toString());
+		Lib.println(process.stdout.readAll().toString());
 		process.close();
 		return exitCode;
 	}

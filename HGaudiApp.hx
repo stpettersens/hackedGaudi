@@ -58,7 +58,7 @@ class HGaudiApp {
 		var foreman = new HGaudiForeman(buildConf, action);
 		var builder = new HGaudiBuilder(_hash, action);
 		builder.setTarget(foreman.getTarget());
-		builder.doCommand("exec", "vim");
+		builder.doCommand("exec", "g++");
 		Sys.exit(0);
 	}
 
