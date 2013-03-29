@@ -22,11 +22,18 @@ import php.FileSystem;
 #end
 
 class HGaudiApp {
+	static var appVersion : String = "0.1";
 	static var buildFile : String = "build.json";
 	static var errorCode : Int = -1;
+	static var cleanCode : Int = 0;
 
-	static function displayError(error : String) : Void {
-		Lib.println("\nError with: " + error + ".");
+	static function displayVersion() : Void {
+		Lib.println("hackedGaudi v. " + appVersion);
+		Sys.exit(cleanCode);
+	}
+
+	public static function displayError(error : String) : Void {
+		Lib.println("\nError: " + error + ".");
 		displayUsage(errorCode);
 	}
 
@@ -42,24 +49,22 @@ class HGaudiApp {
 	// Load and delegate parse and execution of build file.
 	static function loadBuild(action : String) : Void {
 		var buildConf : String = null;
-		if(FileSystem.exists(buildFile)) {
+		if(FileSystem.exists(buildFile))
 			buildConf = File.read(buildFile, false).readAll().toString();
-		}
 		else 
-			displayError("Build file (" + buildFile + "). Cannot be found/opened"); 
+			displayError("Build file (" + buildFile + ") cannot be found/opened"); 
 
 		// Shrink string by replacing tabs (ASCII 9) with null space;
 		// Gaudi build files should be written using tabs.
 		buildConf = StringTools.replace(buildConf, String.fromCharCode(9), "");
 
-		var _hash = new Hash<String>();
-
 		// Delegate to the foreman and builder.
 		var foreman = new HGaudiForeman(buildConf, action);
-		var builder = new HGaudiBuilder(_hash, action);
+		var builder = new HGaudiBuilder(action);
 		builder.setTarget(foreman.getTarget());
-		builder.doCommand("exec", "g++");
-		Sys.exit(0);
+		builder.setAction(foreman.getAction());
+		builder.doAction();
+		Sys.exit(cleanCode);
 	}
 
 	public static function main() : Void {
@@ -70,7 +75,9 @@ class HGaudiApp {
 		if(Sys.args()[0] == null) loadBuild(action);
 
 		// Handle command line arguments.
-		if(Sys.args()[0] == "-i") displayUsage(0);
+		else if(Sys.args()[0] == "-i") displayUsage(cleanCode);
+
+		else if(Sys.args()[0] == "-v") displayVersion();
 
 	}
 }

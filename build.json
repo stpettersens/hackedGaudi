@@ -2,22 +2,18 @@
 	"preamble": {
 	
 		"source": "*",
-		"target": "ngaudi",
-		"cc": "g++",
-		"win_includes": "C:/Dev/Boost",
-		"nix_includes": "/usr/include/boost"
+		"target": "hgaudi.n",
+		"cc": "haxe"
 	},
 
 	"build": [
 
-		{ "echo": "Compiling NativeGaudi..." },
-		{ "exec": "g++ src/NativeGaudiBase.cpp src/NativeGaudiApp.cpp src/NativeGaudiForeman.cpp src/NativeGaudiBuilder.cpp 
-		   src/NativeGaudiHabitat.cpp src/NativeGaudiCommands.cpp libboost_regex-gcc.a -o bin/ngaudi -IC:/Dev/Boost" },
-		{ "xstrip": "bin/ngaudi" }
+		{ "echo": "Compiling hackedGaudi for Neko VM..." },
+		{ "exec": "haxe -main HGaudiApp -neko hgaudi.n" }
 	],
 	
 	"clean": [
 
-		{ "erasex": "bin/ngaudi" }
+		{ "erase": "hgaudi.n" }
 	]
 }

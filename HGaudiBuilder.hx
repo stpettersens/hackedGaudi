@@ -16,52 +16,76 @@ import php.Lib;
 #end
 
 class HGaudiBuilder {
-	var commands : Hash<String>;
 	var target : String;
 	var action_name : String;
-	var action : Array<String>;
+	var action : Hash<String>;
 	var verbose: Bool;
+	var passed : Bool;
 
 	// Constructor for HGaudiBuilder.
-	public function new(commands : Hash<String>, action : String) {
-		this.commands = commands;
-		action_name = action;
+	public function new(action_name : String) {
+		this.action_name = action_name;
+		this.passed = false;
+		this.verbose = true;
 	}
 
 	// Print executed command.
 	function printCommand(command : String, param : String) : Void {
-		if(verbose && command != "echo")
-			Lib.println("\t: " + command + " " + param + "\n");
+		if(verbose && command != "echo" && command != "null")
+			Lib.println("\t: " + command + " " + param);
 		else if(command == "echo")
 			Lib.println("\t# " + param);
 	}
 
+	// Execute an external program or process.
 	function execExtern(app : String) : Int {
-		var process : sys.io.Process = new sys.io.Process(app, []);
+		var app = app.split(" ");
+		var params = app.slice(2, app.length - 1);
+		var process : sys.io.Process = new sys.io.Process(app[1], params);
 		var exitCode : Int = process.exitCode();
 		Lib.println(process.stderr.readAll().toString());
-		Lib.println(process.stdout.readAll().toString());
 		#if !php
 		process.close();
 		#end
 		return exitCode;
 	}
 
+	// Set target for the action.
 	public function setTarget(target : String) : Void {
 		this.target = target;
-		trace(this.target);
 	}
 
-	public function setAction(action : Array<String>) : Void {
+	// Set action.
+	public function setAction(action : Hash<String>) : Void {
 		this.action = action;
-		trace(this.action);
 	}
 
 	// Execute a command in the action.
-	public function doCommand(command : String, param : String) : Void {
+	function doCommand(command : String, param : String) : Int {
 		printCommand(command, param);
 		var exitCode : Int = 0;
-		if(command == "exec")
-			exitCode = execExtern(param);
+		switch(command) {
+			case "null":
+				// Do nothing.
+			case "exec":
+				exitCode = execExtern(param);
+			case "erase":
+				if(sys.FileSystem.exists(param))
+					sys.FileSystem.deleteFile(param);
+		}
+		return exitCode;
+	}
+
+	// Execute an action.
+	public function doAction() : Void {
+		Lib.println("[ " + target + " => " + action_name + " ]");
+		for(command in action.keys()) {
+			var exitCode : Int = doCommand(command, action.get(command));
+			if(exitCode == 0) passed = true;
+			else passed = false;
+		}
+		var status : String = "failed";
+		if(passed) status = "completed successfully";
+		Lib.println("\nAction " + status + ".");
 	}
 }
