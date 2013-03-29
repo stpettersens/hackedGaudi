@@ -9,10 +9,13 @@ Released under the MIT/X11 License.
 */
 #if neko
 import neko.Lib;
+import neko.FileSystem;
 #elseif cpp
 import cpp.Lib;
+import cpp.FileSystem;
 #elseif php
 import php.Lib;
+import php.FileSystem;
 #end
 
 class HGaudiBuilder {
@@ -32,9 +35,9 @@ class HGaudiBuilder {
 	// Print executed command.
 	function printCommand(command : String, param : String) : Void {
 		if(verbose && command != "echo" && command != "null")
-			Lib.println("\t: " + command + " " + param);
+			Lib.println("\t:" + command + " " + param);
 		else if(command == "echo")
-			Lib.println("\t# " + param);
+			Lib.println("\t#" + param);
 	}
 
 	// Execute an external program or process.
@@ -70,8 +73,8 @@ class HGaudiBuilder {
 			case "exec":
 				exitCode = execExtern(param);
 			case "erase":
-				if(sys.FileSystem.exists(param))
-					sys.FileSystem.deleteFile(param);
+				if(FileSystem.exists(param))
+					FileSystem.deleteFile(param);
 		}
 		return exitCode;
 	}

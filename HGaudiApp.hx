@@ -79,5 +79,15 @@ class HGaudiApp {
 
 		else if(Sys.args()[0] == "-v") displayVersion();
 
+		for(i in 0 ... Sys.args().length) {
+			if(Sys.args()[i].charAt(0) == "-") {
+			
+			}
+			else {
+				action = Sys.args()[i];
+				loadBuild(action);
+			}
+		}
+
 	}
 }
