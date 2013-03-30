@@ -59,8 +59,14 @@ class HGaudiBuilder {
 	}
 
 	// Set action.
-	public function setAction(action : Hash<String>) : Void {
-		this.action = action;
+	public function setAction(a : Hash<String>) : Void {
+		//action = a;
+		action = new Hash<String>();
+		for(key in a.keys()) {
+			action.set(key, a.get(key));
+		}
+		trace(a);
+		trace("Setting action as " + action);
 	}
 
 	// Execute a command in the action.
@@ -81,13 +87,14 @@ class HGaudiBuilder {
 
 	// Execute an action.
 	public function doAction() : Void {
-		doCommand("exec", "g++ blah.cpp");
 		Lib.println("[ " + target + " => " + action_name + " ]");
+		#if(neko || cs || java)
 		for(command in this.action.keys()) {
 			var exitCode : Int = doCommand(command, action.get(command));
 			if(exitCode == 0) passed = true;
 			else passed = false;
 		}
+		#end
 		var status : String = "failed";
 		if(passed) status = "completed successfully";
 		Lib.println("\nAction " + status + ".");
