@@ -81,8 +81,9 @@ class HGaudiBuilder {
 
 	// Execute an action.
 	public function doAction() : Void {
+		doCommand("exec", "g++ blah.cpp");
 		Lib.println("[ " + target + " => " + action_name + " ]");
-		for(command in action.keys()) {
+		for(command in this.action.keys()) {
 			var exitCode : Int = doCommand(command, action.get(command));
 			if(exitCode == 0) passed = true;
 			else passed = false;
