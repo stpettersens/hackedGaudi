@@ -13,6 +13,9 @@ import neko.FileSystem;
 #elseif cpp
 import cpp.Lib;
 import cpp.FileSystem;
+#elseif java 
+import java.Lib;
+import java.io.File;
 #elseif php
 import php.Lib;
 import php.FileSystem;
@@ -35,9 +38,9 @@ class HGaudiBuilder {
 	// Print executed command.
 	function printCommand(command : String, param : String) : Void {
 		if(verbose && command != "echo" && command != "null")
-			Lib.println("\t:" + command + " " + param);
+			HGaudiPlatform.println("\t:" + command  + " " + param);
 		else if(command == "echo")
-			Lib.println("\t#" + param);
+			HGaudiPlatform.println("\t#" + param);
 	}
 
 	// Execute an external program or process.
@@ -46,7 +49,7 @@ class HGaudiBuilder {
 		var params = app.slice(2, app.length - 1);
 		var process : sys.io.Process = new sys.io.Process(app[1], params);
 		var exitCode : Int = process.exitCode();
-		Lib.println(process.stderr.readAll().toString());
+		HGaudiPlatform.println(process.stderr.readAll().toString());
 		#if !php
 		process.close();
 		#end
@@ -59,14 +62,9 @@ class HGaudiBuilder {
 	}
 
 	// Set action.
-	public function setAction(a : Hash<String>) : Void {
-		//action = a;
-		action = new Hash<String>();
-		for(key in a.keys()) {
-			action.set(key, a.get(key));
-		}
-		trace(a);
-		trace("Setting action as " + action);
+	public function setAction(action : Hash<String>) : Void {
+		this.action = action;
+		//trace(this.action);
 	}
 
 	// Execute a command in the action.
@@ -79,24 +77,28 @@ class HGaudiBuilder {
 			case "exec":
 				exitCode = execExtern(param);
 			case "erase":
+				#if !java
 				if(FileSystem.exists(param))
 					FileSystem.deleteFile(param);
+				#else
+				var file = new File(param);
+				if(file.exists() && file.isFile())
+					file.delete();
+				#end
 		}
 		return exitCode;
 	}
 
 	// Execute an action.
 	public function doAction() : Void {
-		Lib.println("[ " + target + " => " + action_name + " ]");
-		#if(neko || cs || java)
-		for(command in this.action.keys()) {
+		HGaudiPlatform.println("[ " + target + " => " + action_name + " ]");
+		for(command in action.keys()) {
 			var exitCode : Int = doCommand(command, action.get(command));
 			if(exitCode == 0) passed = true;
 			else passed = false;
 		}
-		#end
 		var status : String = "failed";
 		if(passed) status = "completed successfully";
-		Lib.println("\nAction " + status + ".");
+		HGaudiPlatform.println("\nAction " + status + ".");
 	}
 }

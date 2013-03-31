@@ -15,6 +15,9 @@ import neko.FileSystem;
 import cpp.Lib;
 import cpp.io.File;
 import cpp.FileSystem;
+#elseif java 
+import java.Lib;
+import java.io.File;
 #elseif php
 import php.Lib;
 import php.io.File;
@@ -28,12 +31,13 @@ class HGaudiApp {
 	static var cleanCode : Int = 0;
 
 	static function displayVersion() : Void {
-		Lib.println("hackedGaudi v. " + appVersion);
+		HGaudiPlatform.println("hackedGaudi v. " + appVersion 
+		+ HGaudiPlatform.getPlatform());
 		Sys.exit(cleanCode);
 	}
 
 	public static function displayError(error : String) : Void {
-		Lib.println("\nError: " + error + ".");
+		HGaudiPlatform.println("\nError: " + error + ".");
 		displayUsage(errorCode);
 	}
 
@@ -42,17 +46,24 @@ class HGaudiApp {
 		+ "\nCopyright (c) 2013 Sam Saint-Pettersen"
 		+ "\n\nReleased under the MIT/X11 License."
 		+ "\n\nUsage: hgaudi [-l][-i][-v][-n][-m][-q]";
-		Lib.println(usage);
+		HGaudiPlatform.println(usage);
 		Sys.exit(exitCode);
 	}
 
 	// Load and delegate parse and execution of build file.
 	static function loadBuild(action : String) : Void {
 		var buildConf : String = null;
+		#if !java
 		if(FileSystem.exists(buildFile))
-			buildConf = File.read(buildFile, false).readAll().toString();
+			buildConf = File.getContent(buildFile); 
+		#else
+		var file = new File(buildFile);
+		if(file.exists() && file.isFile()) {
+			buildConf = sys.io.File.getContent(buildFile);
+		}
+		#end
 		else 
-			displayError("Build file (" + buildFile + ") cannot be found/opened"); 
+			displayError("Build file (" + buildFile + ") cannot be found/opened");
 
 		// Shrink string by replacing tabs (ASCII 9) with null space;
 		// Gaudi build files should be written using tabs.
@@ -73,7 +84,7 @@ class HGaudiApp {
 		/* Default behavior is to build a project following
 		the build file in the current working directory. */
 		if(Sys.args()[0] == null) loadBuild(action);
-
+		
 		// Handle command line arguments.
 		else if(Sys.args()[0] == "-i") displayUsage(cleanCode);
 
@@ -81,13 +92,12 @@ class HGaudiApp {
 
 		for(i in 0 ... Sys.args().length) {
 			if(Sys.args()[i].charAt(0) == "-") {
-			
+				//...
 			}
 			else {
 				action = Sys.args()[i];
 				loadBuild(action);
 			}
 		}
-
 	}
 }
