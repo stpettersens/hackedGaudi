@@ -10,8 +10,8 @@ Released under the MIT/X11 License.
 class HGaudiForeman {
 	var buildConf : String;
 	var buildJson : Dynamic;
-	var preamble : Hash<String>;
-	var action : Hash<String>;
+	var preamble : Map<String,String>;
+	var action : Map<String,String>;
 	var action_name : String;
 	var target : String;
 
@@ -22,9 +22,9 @@ class HGaudiForeman {
 		parseBuildJSON();
 	}
 
-	// Parse build configurations into hashes.
+	// Parse build configurations into Map<String,String>es.
 	function parseBuildJSON() : Void {
-		preamble = new Hash<String>();
+		preamble = new Map<String,String>();
 		var json : HGaudiTypes.PreambleObject = null;
 		try {
 			// Try to parse build file JSON for first time.
@@ -40,23 +40,23 @@ class HGaudiForeman {
 			preamble.set(Std.string(key), Std.string(p));
 		}
 		var json_b : HGaudiTypes.ActionObject = haxe.Json.parse(buildConf);
-		var x = new Hash<String>();
+		var x = new Map<String,String>();
 		var a : HGaudiTypes.Action = null;
 		switch(action_name) {
-			case "build": // Reflect default "build" action into hash.
+			case "build": // Reflect default "build" action into Map<String,String>.
 				for(key in Reflect.fields(json_b.build)) {
 					a = Reflect.field(json_b.build, key);
 					x.set(Std.string(key), Std.string(a));
 				}
-			case "clean": // Reflect "clean" action into hash.
+			case "clean": // Reflect "clean" action into Map<String,String>.
 				for(key in Reflect.fields(json_b.clean)) {
 					a = Reflect.field(json_b.clean, key);
 					x.set(Std.string(key), Std.string(a));
 				}
 		}
-		var y = x.get("__a"); // Get array member from hash.
+		var y = x.get("__a"); // Get array member from Map<String,String>.
 		var z = y.split(","); // Split into true array, z, at ",".
-		action = new Hash<String>();
+		action = new Map<String,String>();
 		for(i in 0 ... z.length) {
 			// Remove unwanted characters from action array.
 			z[i] = StringTools.replace(z[i], "[", "");
@@ -78,7 +78,7 @@ class HGaudiForeman {
 	}
 
 	// Get action from parsed build file.
-	public function getAction() : Hash<String> {
+	public function getAction() : Map<String,String> {
 		return action;
 	}
 }

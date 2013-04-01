@@ -9,10 +9,9 @@ Released under the MIT/X11 License.
 */
 #if neko
 import neko.Lib;
-import neko.FileSystem;
 #elseif cpp
 import cpp.Lib;
-import cpp.FileSystem;
+//import cpp.FileSystem;
 #elseif php
 import php.Lib;
 import php.FileSystem;

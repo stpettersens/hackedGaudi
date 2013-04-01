@@ -9,12 +9,8 @@ Released under the MIT/X11 License.
 */
 #if neko
 import neko.Lib;
-import neko.io.File;
-import neko.FileSystem;
 #elseif cpp
 import cpp.Lib;
-import cpp.io.File;
-import cpp.FileSystem;
 #elseif java 
 import java.Lib;
 import java.io.File;
@@ -53,15 +49,9 @@ class HGaudiApp {
 	// Load and delegate parse and execution of build file.
 	static function loadBuild(action : String) : Void {
 		var buildConf : String = null;
-		#if !java
-		if(FileSystem.exists(buildFile))
-			buildConf = File.getContent(buildFile); 
-		#else
-		var file = new File(buildFile);
-		if(file.exists() && file.isFile()) {
-			buildConf = sys.io.File.getContent(buildFile);
-		}
-		#end
+		//#if !java
+		if(sys.FileSystem.exists(buildFile))
+			buildConf = sys.io.File.getContent(buildFile); 
 		else 
 			displayError("Build file (" + buildFile + ") cannot be found/opened");
 

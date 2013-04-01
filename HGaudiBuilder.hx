@@ -9,10 +9,8 @@ Released under the MIT/X11 License.
 */
 #if neko
 import neko.Lib;
-import neko.FileSystem;
 #elseif cpp
 import cpp.Lib;
-import cpp.FileSystem;
 #elseif java 
 import java.Lib;
 import java.io.File;
@@ -24,7 +22,7 @@ import php.FileSystem;
 class HGaudiBuilder {
 	var target : String;
 	var action_name : String;
-	var action : Hash<String>;
+	var action : Map<String,String>;
 	var verbose: Bool;
 	var passed : Bool;
 
@@ -62,7 +60,7 @@ class HGaudiBuilder {
 	}
 
 	// Set action.
-	public function setAction(action : Hash<String>) : Void {
+	public function setAction(action : Map<String,String>) : Void {
 		this.action = action;
 		//trace(this.action);
 	}
@@ -78,8 +76,8 @@ class HGaudiBuilder {
 				exitCode = execExtern(param);
 			case "erase":
 				#if !java
-				if(FileSystem.exists(param))
-					FileSystem.deleteFile(param);
+				if(sys.FileSystem.exists(param))
+					sys.FileSystem.deleteFile(param);
 				#else
 				var file = new File(param);
 				if(file.exists() && file.isFile())
