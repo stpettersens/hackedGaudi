@@ -45,13 +45,17 @@ class HGaudiBuilder {
 	function execExtern(app : String) : Int {
 		var app = app.split(" ");
 		var params = app.slice(2, app.length - 1);
+		#if !js
 		var process : sys.io.Process = new sys.io.Process(app[1], params);
 		var exitCode : Int = process.exitCode();
 		HGaudiPlatform.println(process.stderr.readAll().toString());
-		#if !php
-		process.close();
 		#end
+		#if(!js && !php)
+		process.close();
 		return exitCode;
+		#else 
+		return 0;
+		#end
 	}
 
 	// Set target for the action.
@@ -62,7 +66,6 @@ class HGaudiBuilder {
 	// Set action.
 	public function setAction(action : Map<String,String>) : Void {
 		this.action = action;
-		//trace(this.action);
 	}
 
 	// Execute a command in the action.
@@ -75,13 +78,14 @@ class HGaudiBuilder {
 			case "exec":
 				exitCode = execExtern(param);
 			case "erase":
-				#if !java
+				#if (!java && !js)
 				if(sys.FileSystem.exists(param))
 					sys.FileSystem.deleteFile(param);
-				#else
+				#elseif (java && !js)
 				var file = new File(param);
 				if(file.exists() && file.isFile())
 					file.delete();
+				#else
 				#end
 		}
 		return exitCode;

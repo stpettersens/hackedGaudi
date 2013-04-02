@@ -1,8 +1,10 @@
 make:
-	haxe -main HGaudiApp -neko hgaudi.n
+	haxe -cp src -main HGaudiApp -neko hgaudi.n
 cpp:
-	haxe -main HGaudiApp -cpp hgaudi
+	haxe -cp src -main HGaudiApp -cpp hgaudi
 jvm:
-	haxe -main HGaudiApp -java java
+	haxe -cp src -main HGaudiApp -java jvm
 php:
-	haxe -main HGaudiApp -php php
+	haxe -cp src -main HGaudiApp -php php
+js:
+	haxe -cp src -lib jQueryExtern -main HGaudiApp -js hgaudi-online/scripts/hgaudi.js

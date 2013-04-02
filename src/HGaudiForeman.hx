@@ -22,7 +22,7 @@ class HGaudiForeman {
 		parseBuildJSON();
 	}
 
-	// Parse build configurations into Map<String,String>es.
+	// Parse build configurations into hashes.
 	function parseBuildJSON() : Void {
 		preamble = new Map<String,String>();
 		var json : HGaudiTypes.PreambleObject = null;
@@ -42,21 +42,44 @@ class HGaudiForeman {
 		var json_b : HGaudiTypes.ActionObject = haxe.Json.parse(buildConf);
 		var x = new Map<String,String>();
 		var a : HGaudiTypes.Action = null;
+		action = new Map<String,String>();
 		switch(action_name) {
-			case "build": // Reflect default "build" action into Map<String,String>.
+			case "build": // Reflect default "build" action into hash.
 				for(key in Reflect.fields(json_b.build)) {
 					a = Reflect.field(json_b.build, key);
 					x.set(Std.string(key), Std.string(a));
+					#if js
+					var y = x.get(key);
+					y = StringTools.replace(y, "[", "");
+					y = StringTools.replace(y, "{", "");
+					y = StringTools.replace(y, "}", "");
+					y = StringTools.replace(y, "\n", "");
+					var z = y.split(":");
+					var regex : EReg = ~/(\W+)/g;
+					z[0] = regex.replace(z[0],"");
+					action.set(z[0], z[1]);
+					#end
 				}
-			case "clean": // Reflect "clean" action into Map<String,String>.
+			case "clean": // Reflect "clean" action into hash.
 				for(key in Reflect.fields(json_b.clean)) {
 					a = Reflect.field(json_b.clean, key);
 					x.set(Std.string(key), Std.string(a));
+					#if js
+					var y = x.get(key);
+					y = StringTools.replace(y, "[", "");
+					y = StringTools.replace(y, "{", "");
+					y = StringTools.replace(y, "}", "");
+					y = StringTools.replace(y, "\n", "");
+					var z = y.split(":");
+					var regex : EReg = ~/(\W+)/g;
+					z[0] = regex.replace(z[0],"");
+					action.set(z[0], z[1]);
+					#end
 				}
 		}
-		var y = x.get("__a"); // Get array member from Map<String,String>.
+		#if !js
+		var y = x.get("__a"); // Get array member from hashes.
 		var z = y.split(","); // Split into true array, z, at ",".
-		action = new Map<String,String>();
 		for(i in 0 ... z.length) {
 			// Remove unwanted characters from action array.
 			z[i] = StringTools.replace(z[i], "[", "");
@@ -70,6 +93,7 @@ class HGaudiForeman {
 				x[1] = StringTools.replace(x[1], " ", "");
 			action.set(x[0], x[1]);
 		}
+		#end
 	}
 
 	// Get target from parsed build file preamble.
