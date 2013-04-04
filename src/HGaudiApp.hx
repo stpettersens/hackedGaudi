@@ -40,7 +40,7 @@ class HGaudiApp {
 	}
 
 	static function displayUsage(exitCode: Int) : Void {
-		var usage : String = "hackedGaudi platform agnostic build tool"
+		var usage : String = "\nhackedGaudi platform agnostic build tool"
 		+ "\nCopyright (c) 2013 Sam Saint-Pettersen"
 		+ "\n\nReleased under the MIT/X11 License."
 		+ "\n\nUsage: hgaudi [-l][-u][-i][-v][-n][-m][-q]";

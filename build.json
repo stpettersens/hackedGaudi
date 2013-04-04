@@ -1,7 +1,7 @@
 {
 	"preamble": {
 	
-		"source": "*",
+		"source": "HGaudiApp",
 		"target": "hgaudi.n",
 		"cc": "haxe"
 	},
@@ -9,7 +9,7 @@
 	"build": [
 
 		{ "echo": "Compiling hackedGaudi for Neko VM..." },
-		{ "exec": "haxe -cp src -main HGaudiApp -neko hgaudi.n" }
+		{ "exec": "haxe -cp src -main HGaudiApp -neko hgaudi.n" },
 	],
 	
 	"clean": [

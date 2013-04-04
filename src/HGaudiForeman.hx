@@ -58,6 +58,7 @@ class HGaudiForeman {
 					var regex : EReg = ~/(\W+)/g;
 					z[0] = regex.replace(z[0],"");
 					action.set(z[0], z[1]);
+					trace(action);
 					#end
 				}
 			case "clean": // Reflect "clean" action into hash.
@@ -74,6 +75,7 @@ class HGaudiForeman {
 					var regex : EReg = ~/(\W+)/g;
 					z[0] = regex.replace(z[0],"");
 					action.set(z[0], z[1]);
+					trace(action);
 					#end
 				}
 		}

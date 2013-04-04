@@ -1,4 +1,4 @@
 *.n
-bootstrap
 hgaudi.js
-
+hgaudi.min.js
+hgaudi-online/build.json
