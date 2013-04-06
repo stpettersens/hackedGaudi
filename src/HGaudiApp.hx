@@ -43,7 +43,19 @@ class HGaudiApp {
 		var usage : String = "\nhackedGaudi platform agnostic build tool"
 		+ "\nCopyright (c) 2013 Sam Saint-Pettersen"
 		+ "\n\nReleased under the MIT/X11 License."
-		+ "\n\nUsage: hgaudi [-l][-u][-i][-v][-n][-m][-q]";
+		+ "\n\nUsage: hgaudi [-l][-u][-i][-v][-b][-m][-q]"
+		+ "\n[-f &lt;build file&gt;][-u &lt;build file URL&gt;][&lt;action&gt;|\"&lt;command&gt;\"]\n"
+		+ "\n-l: Enable logging of certain events."
+		+ "\n-i: Display usage information and quit."
+		+ "\n-v: Display version information and quit."
+		+ "\n-b: Generate a Gaudi build file (build.json)."
+		+ "\n-q: Mute console output, except for :echo and errors &lt;Quiet mode&gt;."
+		+ "\n-f: Use &lt;build file&gt; instead of build.json."
+		+ "\n-u: Use &lt;build file URL&gt; instead of local file.";
+		#if !js
+		usage = StringTools.replace(usage, "&lt;", "<");
+		usage = StringTools.replace(usage, "&gt;", ">");
+		#end
 		HGaudiPlatform.println(usage);
 		#if !js
 		Sys.exit(exitCode);
@@ -98,7 +110,11 @@ class HGaudiApp {
 
 		for(i in 0 ... Sys.args().length) {
 			if(Sys.args()[i].charAt(0) == "-") {
-				//...
+				if(Sys.args()[i] == "-f") {
+					buildFile = Sys.args()[i + 1];
+					if(Sys.args()[i + 2] != null) action = Sys.args()[i + 2];
+					loadBuild(action);
+				}
 			}
 			else {
 				action = Sys.args()[i];
@@ -108,7 +124,8 @@ class HGaudiApp {
 		/* In JavaScript target, the default build file is the uploaded or url refered file. */
 		#elseif js 
 		function prompt() : Void {
-			HGaudiPlatform.instruct("Load a build file to begin with: hgaudi -l &lt;file&gt; or -u &lt;url&gt;.");
+			HGaudiPlatform.instruct("To begin, upload your source files to build");
+			HGaudiPlatform.instruct("and your build file (e.g. build.json) in the Files tab.");
 			displayUsage(cleanCode);
 		}
 		new JQuery(function() : Void {
@@ -120,7 +137,7 @@ class HGaudiApp {
 				var command = commandParam.split(" ");
 				HGaudiPlatform.clear();
 				trace(command);
-				if(command[1] == "-l") { 
+				if(command[1] == "-f") { 
 					buildFile = command[2];	
 					loaded = true;
 					if(command[3] != null) action = command[3];
