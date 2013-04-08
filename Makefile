@@ -7,4 +7,5 @@ jvm:
 php:
 	haxe -cp src -main HGaudiApp -php php
 js:
-	haxe -cp src -lib jQueryExtern -main HGaudiApp -js hgaudi-online/scripts/hgaudi.js
+	haxe -cp src -lib jQueryExtern -main HGaudiApp -js ../hgaudi-online/public/js/hgaudi.js
+	
