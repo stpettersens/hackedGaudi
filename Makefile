@@ -1,12 +1,6 @@
 CC = haxe
 SOURCE = HGaudiApp
 TARGET = hgaudi
-PLATFORM =$(shell uname -s)
-ERASE = del
-
-ifeq ($(platform), Linux)
-	ERASE = rm
-endif
 
 make:
 	$(CC) -cp src -main $(SOURCE) -neko $(TARGET).n
@@ -19,4 +13,4 @@ php:
 js:
 	$(CC) -cp src -lib jQueryExtern -main HGaudiApp -js $(TARGET).js
 	yuicompressor --nomunge $(TARGET).js -o ../hgaudi-online/public/js/$(TARGET).min.js
-	$(ERASE) $(TARGET).js
+	#del $(TARGET).js
