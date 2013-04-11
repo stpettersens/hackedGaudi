@@ -13,4 +13,5 @@ php:
 js:
 	$(CC) -cp src -lib jQueryExtern -main HGaudiApp -js $(TARGET).js
 	yuicompressor --nomunge $(TARGET).js -o ../hgaudi-online/public/js/$(TARGET).min.js
-	#del $(TARGET).js
+	rm $(TARGET).js
+
