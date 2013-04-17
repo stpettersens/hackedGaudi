@@ -11,6 +11,12 @@
 		{ "echo": "Compiling hackedGaudi for Neko VM..." },
 		{ "exec": "haxe -cp src -main HGaudiApp -neko hgaudi.n" }
 	],
+
+	"js" : [
+		{ "echo": "Compiling hackedGaudi for JS..."},
+		{ "exec": "haxe -cp src -main HGaudiApp -js hgaudi.js"},
+		{ "exec": "yuicompressor --nomunge  hgaudi.js -o ../hgaudi-online/public/js/hgaudi.min.js"}
+	],
 	
 	"clean": [
 
