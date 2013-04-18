@@ -44,7 +44,7 @@ class HGaudiBuilder {
 	// Execute an external program or process.
 	function execExtern(app : String) : Int {
 		var app = app.split(" ");
-		var params = app.slice(2, app.length - 1);
+		var params = app.slice(2, app.length);
 		#if !js
 		var process : sys.io.Process = new sys.io.Process(app[1], params);
 		var exitCode : Int = process.exitCode();

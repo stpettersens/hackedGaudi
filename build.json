@@ -13,9 +13,9 @@
 	],
 
 	"js" : [
-		{ "echo": "Compiling hackedGaudi for JS..."},
-		{ "exec": "haxe -cp src -main HGaudiApp -js hgaudi.js"},
-		{ "exec": "yuicompressor --nomunge  hgaudi.js -o ../hgaudi-online/public/js/hgaudi.min.js"}
+		{ "echo": "Compiling hackedGaudi for JS..." },
+		{ "exec": "haxe -cp src -main HGaudiApp -js hgaudi.js" },
+		{ "exec": "yuicompressor --nomunge  hgaudi.js -o ../hgaudi-online/public/js/hgaudi.min.js" }
 	],
 	
 	"clean": [
