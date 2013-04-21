@@ -128,7 +128,11 @@ class HGaudiApp {
 		#elseif js 
 		new JQuery(function() : Void {
 			displayUsage(cleanCode);
+<<<<<<< HEAD
 			HGaudiPlatform.clear();
+=======
+			buildFile = "/api/input/contents/build.json";
+>>>>>>> 56d801ddec1039cf4d60454a9ce416450941a6fb
 			new JQuery("#enterCommand").click(function(ev) {
 				HGaudiPlatform.cls();
 				var commandParam = new JQuery("#command").val();
@@ -136,13 +140,18 @@ class HGaudiApp {
 				HGaudiPlatform.clear();
 				if(command[0] == "hgaudi") {
 					if(command[1] == "-f") { 
+<<<<<<< HEAD
 						buildFile = "/api/input/contents/" + command[2];
+=======
+						buildFile = command[2];	
+>>>>>>> 56d801ddec1039cf4d60454a9ce416450941a6fb
 						if(command[3] != null) action = command[3];
 						HGaudiPlatform.cls();
 						loadBuild(action);
 					}
 					else if(command[1] == "-v") displayVersion();
 					else if(command[1] == "-i") displayUsage(cleanCode);
+<<<<<<< HEAD
 
 					else if(command[1] == null) {
 						loadBuild(action);
@@ -160,6 +169,13 @@ class HGaudiApp {
 						HGaudiPlatform.println(request.responseText);
 					}
 				}
+=======
+					else if(command[1] == null) {			
+						loadBuild(action);
+					}
+					else loadBuild(command[1]);
+				}
+>>>>>>> 56d801ddec1039cf4d60454a9ce416450941a6fb
 			});
 		});
 		#end
