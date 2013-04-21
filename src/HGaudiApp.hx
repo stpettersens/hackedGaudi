@@ -96,6 +96,9 @@ class HGaudiApp {
 
 	public static function main() : Void {
 		buildFile = "build.json";
+		#if js
+		buildFile = "/api/input/contents/build.json";
+		#end
 		var action : String = "build";
 
 		/* Default behavior is to build a project following
@@ -123,35 +126,40 @@ class HGaudiApp {
 		}
 		/* In JavaScript target, the default build file is the uploaded or url refered file. */
 		#elseif js 
-		function prompt() : Void {
-			HGaudiPlatform.instruct("To begin, upload your source files to build");
-			HGaudiPlatform.instruct("and your build file (e.g. build.json) in the Files tab.");
-			displayUsage(cleanCode);
-		}
 		new JQuery(function() : Void {
-			var loaded: Bool = false;
-			prompt();
+			displayUsage(cleanCode);
+			HGaudiPlatform.clear();
 			new JQuery("#enterCommand").click(function(ev) {
 				HGaudiPlatform.cls();
 				var commandParam = new JQuery("#command").val();
 				var command = commandParam.split(" ");
 				HGaudiPlatform.clear();
-				trace(command);
-				if(command[1] == "-f") { 
-					buildFile = command[2];	
-					loaded = true;
-					if(command[3] != null) action = command[3];
-					HGaudiPlatform.cls();
-					loadBuild(action);
-				}
-				else if(command[1].charAt(0) == "-") {
-					if(command[1] == "-v") displayVersion();
+				if(command[0] == "hgaudi") {
+					if(command[1] == "-f") { 
+						buildFile = "/api/input/contents/" + command[2];
+						if(command[3] != null) action = command[3];
+						HGaudiPlatform.cls();
+						loadBuild(action);
+					}
+					else if(command[1] == "-v") displayVersion();
 					else if(command[1] == "-i") displayUsage(cleanCode);
+
+					else if(command[1] == null) {
+						loadBuild(action);
+					}
+					else {
+						action = command[1];
+						loadBuild(action);
+					}
 				}
-				else if(loaded && command[1] != "") {
-					loadBuild(command[1]);
+				else {
+					var request = new js.html.XMLHttpRequest();
+					request.open("GET", "/api/execute/output/" + command[0] + "/" + command[1], false);
+					request.send();
+					if(request.status == 200) {
+						HGaudiPlatform.println(request.responseText);
+					}
 				}
-				else if(command[1] == "") displayError("No build file or action provided");
 			});
 		});
 		#end

@@ -44,16 +44,22 @@ class HGaudiBuilder {
 	// Execute an external program or process.
 	function execExtern(app : String) : Int {
 		var app = app.split(" ");
-		var params = app.slice(2, app.length - 1);
+		var params = app.slice(2, app.length);
 		#if !js
 		var process : sys.io.Process = new sys.io.Process(app[1], params);
 		var exitCode : Int = process.exitCode();
 		HGaudiPlatform.println(process.stderr.readAll().toString());
+		#elseif js 
+		var request = new js.html.XMLHttpRequest();
+		request.open("GET", "/api/execute/output/" + app[1] + "/" + params[0] + " " + params[1]
+		+ " " + params[2], false); //" " + params[3], false);
+		request.send();
+		if(request.status == 200) HGaudiPlatform.println(request.responseText);
 		#end
 		#if(!js && !php)
 		process.close();
 		return exitCode;
-		#else 
+		#else
 		return 0;
 		#end
 	}
@@ -85,7 +91,6 @@ class HGaudiBuilder {
 				var file = new File(param);
 				if(file.exists() && file.isFile())
 					file.delete();
-				#else
 				#end
 		}
 		return exitCode;

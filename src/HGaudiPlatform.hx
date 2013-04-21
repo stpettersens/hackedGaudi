@@ -33,27 +33,16 @@ class HGaudiPlatform {
 	}
 
 	#if js
-	public static function instruct(line : String) : Void {
-		new JQuery(function() : Void {
-			new JQuery("#console").append("<strong>" + line + "</strong><br/>");
-		});
-	}
-	#end
-
-	#if js
 	public static function cls() : Void {
 		new JQuery(function() : Void {
 			new JQuery("#console").empty();
 		});
 	} 
-	#end
 
-	#if js
 	public static function clear() : Void {
 		new JQuery(function() : Void {
-			new JQuery("#command").val("");
-			new JQuery("#command").val("hgaudi ");
 			new JQuery("#command").focus();
+			new JQuery("#command").val("hgaudi");
 		});
 	}
 	#end
