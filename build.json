@@ -14,11 +14,7 @@
 
 	"js" : [
 		{ "echo": "Compiling hackedGaudi for JS..." },
-<<<<<<< HEAD
 		{ "exec": "haxe -cp src -lib jQueryExtern -main HGaudiApp -js hgaudi.js" },
-=======
-		{ "exec": "haxe -cp src -main HGaudiApp -js hgaudi.js" },
->>>>>>> 56d801ddec1039cf4d60454a9ce416450941a6fb
 		{ "exec": "yuicompressor --nomunge  hgaudi.js -o ../hgaudi-online/public/js/hgaudi.min.js" }
 	],
 	
