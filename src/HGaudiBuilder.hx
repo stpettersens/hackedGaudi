@@ -107,5 +107,10 @@ class HGaudiBuilder {
 		var status : String = "failed";
 		if(passed) status = "completed successfully";
 		HGaudiPlatform.println("\nAction " + status + ".");
+		#if js
+		var request = new js.html.XMLHttpRequest();
+		request.open("GET", "/api/output/get/");
+		request.send();
+		#end
 	}
 }

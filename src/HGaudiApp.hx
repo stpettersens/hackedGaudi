@@ -124,8 +124,8 @@ class HGaudiApp {
 				loadBuild(action);
 			}
 		}
+		#elseif js
 		/* In JavaScript target, the default build file is the uploaded or url refered file. */
-		#elseif js 
 		new JQuery(function() : Void {
 			displayUsage(cleanCode);
 			HGaudiPlatform.clear();
