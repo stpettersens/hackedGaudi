@@ -33,17 +33,30 @@ class HGaudiPlatform {
 	}
 
 	#if js
-	public static function cls() : Void {
+	public static function js_cls() : Void {
 		new JQuery(function() : Void {
 			new JQuery("#console").empty();
 		});
 	} 
 
-	public static function clear() : Void {
+	public static function js_clear() : Void {
 		new JQuery(function() : Void {
 			new JQuery("#command").focus();
 			new JQuery("#command").val("hgaudi");
 		});
+	}
+
+	public static function js_invokeApi(url : String) : String {
+		var response = null;
+		var request = new js.html.XMLHttpRequest();
+		request.open("GET", url, false);
+		request.send();
+		if(request.status == 200) response = request.responseText;
+		return response;
+	}
+
+	public static function js_completeAction() : Void {
+		new JQuery("#complete").trigger("click");
 	}
 	#end
 

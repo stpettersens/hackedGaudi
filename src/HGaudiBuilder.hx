@@ -50,10 +50,8 @@ class HGaudiBuilder {
 		var exitCode : Int = process.exitCode();
 		HGaudiPlatform.println(process.stderr.readAll().toString());
 		#elseif js 
-		var request = new js.html.XMLHttpRequest();
-		request.open("GET", "/api/execute/output/" + app[1] + "/" + params[0] + " " + params[1]
-		+ " " + params[2], false); //" " + params[3], false);
-		request.send();
+		HGaudiPlatform.js_invokeApi("/api/execute/output/" + app[1] + "/" + params[0] + " " + params[1]
+		+ " " + params[2]); //" " + params[3]);
 		#end
 		#if(!js && !php)
 		process.close();
@@ -107,19 +105,7 @@ class HGaudiBuilder {
 		if(passed) status = "completed successfully";
 		HGaudiPlatform.println("\nAction " + status + ".");
 		#if js
-		appendOutput();
+		HGaudiPlatform.js_completeAction();
 		#end
 	}
-
-	#if js
-	// JavaScript build: Append produced files to output file list.
-	function appendOutput() : Void {
-		JQuery._static.getJSON("/api/output/get/", function(data) {
-			new JQuery("#o-file-list").empty();
-			JQuery._static.each(data, function(key, val) {
-				new JQuery("#o-file-list").append('<p>' + val.filename + '</p>');
-			});
-		});
-	}
-	#end
 }

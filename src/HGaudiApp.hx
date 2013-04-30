@@ -69,12 +69,8 @@ class HGaudiApp {
 		if(sys.FileSystem.exists(buildFile))
 			buildConf = sys.io.File.getContent(buildFile); 
 		#elseif js
-		var request = new js.html.XMLHttpRequest();
-		request.open("GET", buildFile, false);
-		request.send();
-		if(request.status == 200) {
-			buildConf = request.responseText;
-		}
+		if(true)
+			buildConf = HGaudiPlatform.js_invokeApi(buildFile);
 		#end
 		else
 			displayError("Build file (" + buildFile + ") cannot be loaded");
@@ -128,17 +124,17 @@ class HGaudiApp {
 		/* In JavaScript target, the default build file is the uploaded or url refered file. */
 		new JQuery(function() : Void {
 			displayUsage(cleanCode);
-			HGaudiPlatform.clear();
+			HGaudiPlatform.js_clear();
 			new JQuery("#enterCommand").click(function(ev) {
-				HGaudiPlatform.cls();
+				HGaudiPlatform.js_cls();
 				var commandParam = new JQuery("#command").val();
 				var command = commandParam.split(" ");
-				HGaudiPlatform.clear();
+				HGaudiPlatform.js_clear();
 				if(command[0] == "hgaudi") {
 					if(command[1] == "-f") { 
 						buildFile = "/api/input/contents/" + command[2];
 						if(command[3] != null) action = command[3];
-						HGaudiPlatform.cls();
+						HGaudiPlatform.js_cls();
 						loadBuild(action);
 					}
 					else if(command[1] == "-v") displayVersion();
@@ -151,14 +147,8 @@ class HGaudiApp {
 						loadBuild(action);
 					}
 				}
-				else {
-					var request = new js.html.XMLHttpRequest();
-					request.open("GET", "/api/execute/output/" + command[0] + "/" + command[1], false);
-					request.send();
-					if(request.status == 200) {
-						HGaudiPlatform.println(request.responseText);
-					}
-				}
+				else HGaudiPlatform.js_invokeApi("/api/execute/output/" + command[0] + "/" + command[1]);
+
 			});
 		});
 		#end
